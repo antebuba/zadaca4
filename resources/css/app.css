@@ -1,0 +1,48 @@
+.container {
+    width: 100%;
+    max-width: 1200px; /* Ograničava širinu kontejnera */
+    margin: 0 auto; /* Centrira kontejner */
+    padding: 0 15px; /* Dodaje razmak sa strane kontejnera */
+}
+
+.row {
+    margin: 20px 0; /* Dodaje marginu na vrhu i dnu reda */
+}
+
+.col-12 {
+    width: 100%; /* Stupac širine 100% */
+}
+
+.card {
+    border: 1px solid #ccc; /* Dodaje okvir kartici */
+    border-radius: 5px; /* Zaobljuje rubove kartice */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Dodaje sjenu kartici */
+}
+
+.card-header {
+    background-color: #f0f0f0; /* Postavlja pozadinu zaglavlja kartice */
+    padding: 10px; /* Dodaje razmak unutar zaglavlja */
+}
+
+.table-container {
+    width: 100%;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th, .table td {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+.table th {
+    background-color: #f2f2f2;
+    text-align: left;
+}
+
+.table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
