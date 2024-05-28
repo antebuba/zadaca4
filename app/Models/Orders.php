@@ -40,4 +40,10 @@ class Orders extends Model
     {
         return $this->belongsTo(Shippers::class, 'ShipperID', 'ShipperID');
     }
+
+    // Relacija mnogo prema mnogo s Products
+    public function products()
+    {
+        return $this->belongsToMany(Products::class, 'order_details', 'OrderID', 'ProductID');
+    }
 }
