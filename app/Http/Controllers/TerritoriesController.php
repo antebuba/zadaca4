@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 class TerritoriesController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Prikazuje popis svih teritorija.
+     *
+     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -17,7 +19,9 @@ class TerritoriesController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Prikazuje formu za stvaranje nove teritorije.
+     *
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -25,7 +29,10 @@ class TerritoriesController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Sprema novu teritoriju u bazi podataka.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
@@ -43,11 +50,14 @@ class TerritoriesController extends Controller
             // Dodajte CategoryID ako je potrebno
         ]);
 
-        return redirect()->route('territories.index')->with('success', 'Kategorija je uspješno spremljena.');
+        return redirect()->route('territories.index')->with('success', 'Teritorija je uspješno spremljena.');
     }
 
     /**
-     * Display the specified resource.
+     * Prikazuje određenu teritoriju.
+     *
+     * @param  string  $id
+     * @return \Illuminate\Http\Response
      */
     public function show(string $id)
     {
@@ -55,7 +65,10 @@ class TerritoriesController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Prikazuje formu za uređivanje određene teritorije.
+     *
+     * @param  int  $TerritoryID
+     * @return \Illuminate\View\View
      */
     public function edit($TerritoryID)
     {
@@ -65,7 +78,11 @@ class TerritoriesController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Ažurira određenu teritoriju u bazi podataka.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $TerritoryID
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $TerritoryID)
     {
@@ -75,10 +92,7 @@ class TerritoriesController extends Controller
             'RegionID' => 'required|numeric|max:255' // Dodajte validaciju za opis ako je potrebno
         ]);
 
-        // Pronalazi kategoriju u bazi podataka po CategoryID-u
         $territory = Territories::findOrFail($TerritoryID);
-
-        // Ažurirajte postojeći zapis u bazi podataka s novim podacima
         $territory->update([
             'TerritoryID' => $request->TerritoryID,
             'TerritoryDescription' => $request->TerritoryDescription,
@@ -86,18 +100,20 @@ class TerritoriesController extends Controller
             // Dodajte ostale atribute kategorije ovisno o vašoj bazi podataka
         ]);
 
-        // Nakon što se zapis ažurira, preusmjerite korisnika na stranicu s popisom kategorija s porukom o uspješnom ažuriranju
-        return redirect()->route('territories.index')->with('success', 'Kategorija je uspješno ažurirana.');
+        return redirect()->route('territories.index')->with('success', 'Teritorija je uspješno ažurirana.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Briše određenu teritoriju iz baze podataka.
+     *
+     * @param  int  $TerritoryID
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($TerritoryID)
     {
         $territories = Territories::findOrFail($TerritoryID);
         $territories->delete();
 
-        return redirect('/territories')->with('success', 'Category Data is successfully deleted');
+        return redirect('/territories')->with('success', 'Podaci o teritoriji uspješno izbrisani');
     }
 }

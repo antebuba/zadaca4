@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 class CustomerCustomerDemoController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Prikazuje popis svih customer-customer-demo podataka.
+     *
+     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -17,7 +19,9 @@ class CustomerCustomerDemoController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Prikazuje formu za stvaranje novog customer-customer-demo podatka.
+     *
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -25,27 +29,31 @@ class CustomerCustomerDemoController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Sprema novi customer-customer-demo podatak u bazi podataka.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
         $request->validate([
             'customer_id' => 'required|string|max:255',
-            'customer_type_id' => 'required|string|max:255', // Dodajte validaciju za opis ako je potrebno
-
+            'customer_type_id' => 'required|string|max:255',
         ]);
 
         CustomerCustomerDemo::create([
             'CustomerID' => $request->customer_id,
             'CustomerTypeID' => $request->customer_type_id,
-
         ]);
 
-        return redirect()->route('customercustomerdemo.index')->with('success', 'Kategorija je uspješno spremljena.');
+        return redirect()->route('customercustomerdemo.index')->with('success', 'Podatak je uspješno spremljen.');
     }
 
     /**
-     * Display the specified resource.
+     * Prikazuje određeni customer-customer-demo podatak.
+     *
+     * @param  string  $id
+     * @return \Illuminate\Http\Response
      */
     public function show(string $id)
     {
@@ -53,49 +61,51 @@ class CustomerCustomerDemoController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Prikazuje formu za uređivanje određenog customer-customer-demo podatka.
+     *
+     * @param  int  $CustomerID
+     * @return \Illuminate\View\View
      */
     public function edit($CustomerID)
     {
         $customercustomerdemoo = CustomerCustomerDemo::findOrFail($CustomerID);
-
-        return view('customercustomerdemo.edit', compact('customercustomerdemoo')); // Promijenjena varijabla $Category u $category
+        return view('customercustomerdemo.edit', compact('customercustomerdemoo'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Ažurira određeni customer-customer-demo podatak u bazi podataka.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $CustomerID
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $CustomerID)
     {
         $request->validate([
             'CustomerID' => 'required|string|max:255',
-            'CustomerTypeID' => 'required|string|max:255'
-
+            'CustomerTypeID' => 'required|string|max:255',
         ]);
 
-        // Pronalazi kategoriju u bazi podataka po CategoryID-u
         $customercustomerdemoo = CustomerCustomerDemo::findOrFail($CustomerID);
-
-        // Ažurirajte postojeći zapis u bazi podataka s novim podacima
         $customercustomerdemoo->update([
             'CustomerID' => $request->CustomerID,
             'CustomerTypeID' => $request->CustomerTypeID,
-
-            // Dodajte ostale atribute kategorije ovisno o vašoj bazi podataka
         ]);
 
-        // Nakon što se zapis ažurira, preusmjerite korisnika na stranicu s popisom kategorija s porukom o uspješnom ažuriranju
-        return redirect()->route('customercustomerdemo.index')->with('success', 'Kategorija je uspješno ažurirana.');
+        return redirect()->route('customercustomerdemo.index')->with('success', 'Podatak je uspješno ažuriran.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Briše određeni customer-customer-demo podatak iz baze podataka.
+     *
+     * @param  int  $CustomerID
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($CustomerID)
     {
         $customercustomerdemo = CustomerCustomerDemo::findOrFail($CustomerID);
         $customercustomerdemo->delete();
 
-        return redirect('/customercustomerdemo')->with('success', 'Category Data is successfully deleted');
+        return redirect('/customercustomerdemo')->with('success', 'Podatak je uspješno obrisan');
     }
 }

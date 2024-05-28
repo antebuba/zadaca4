@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 class ProductsController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Prikazuje popis svih proizvoda.
+     *
+     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -17,7 +19,9 @@ class ProductsController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Prikazuje formu za stvaranje novog proizvoda.
+     *
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -25,17 +29,20 @@ class ProductsController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Sprema novi proizvod u bazi podataka.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
         $request->validate([
             'product_id' => 'required|numeric|max:255',
             'product_name' => 'required|string|max:255',
-            'supplier_id' => 'required|string|max:255', // Dodajte validaciju za opis ako je potrebno
-            'category_id' => 'required|string|max:255',
+            'supplier_id' => 'required|numeric|max:255',
+            'category_id' => 'required|numeric|max:255',
             'unit' => 'required|string|max:255',
-            'price' => 'required|string|max:255',
+            'price' => 'required|numeric|max:255',
         ]);
 
         Products::create([
@@ -45,15 +52,16 @@ class ProductsController extends Controller
             'CategoryID' => $request->category_id,
             'Unit' => $request->unit,
             'Price' => $request->price
-
-            // Dodajte CategoryID ako je potrebno
         ]);
 
-        return redirect()->route('products.index')->with('success', 'Kategorija je uspješno spremljena.');
+        return redirect()->route('products.index')->with('success', 'Proizvod je uspješno spremljen.');
     }
 
     /**
-     * Display the specified resource.
+     * Prikazuje određeni proizvod.
+     *
+     * @param  string  $id
+     * @return \Illuminate\Http\Response
      */
     public function show(string $id)
     {
@@ -61,17 +69,23 @@ class ProductsController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Prikazuje formu za uređivanje određenog proizvoda.
+     *
+     * @param  int  $ProductID
+     * @return \Illuminate\View\View
      */
     public function edit($ProductID)
     {
         $product = Products::findOrFail($ProductID);
-
-        return view('products.edit', compact('product')); // Promijenjena varijabla $Category u $category
+        return view('products.edit', compact('product'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Ažurira određeni proizvod u bazi podataka.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $ProductID
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $ProductID)
     {
@@ -82,35 +96,32 @@ class ProductsController extends Controller
             'CategoryID' => 'required|numeric|max:255',
             'Unit' => 'required|string|max:255',
             'Price' => 'required|numeric|max:255',
-            // Dodajte validaciju za opis ako je potrebno
         ]);
 
-        // Pronalazi kategoriju u bazi podataka po CategoryID-u
         $product = Products::findOrFail($ProductID);
-
-        // Ažurirajte postojeći zapis u bazi podataka s novim podacima
         $product->update([
             'ProductID' => $request->ProductID,
-            'ProductName' => $request->ProductID,
+            'ProductName' => $request->ProductName,
             'SupplierID' => $request->SupplierID,
             'CategoryID' => $request->CategoryID,
             'Unit' => $request->Unit,
-            'Price' => $request->Price
-            // Dodajte ostale atribute kategorije ovisno o vašoj bazi podataka
+            'Price' => $request->Price,
         ]);
 
-        // Nakon što se zapis ažurira, preusmjerite korisnika na stranicu s popisom kategorija s porukom o uspješnom ažuriranju
-        return redirect()->route('products.index')->with('success', 'Kategorija je uspješno ažurirana.');
+        return redirect()->route('products.index')->with('success', 'Proizvod je uspješno ažuriran.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Briše određeni proizvod iz baze podataka.
+     *
+     * @param  int  $ProductID
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($ProductID)
     {
-        $products = Products::findOrFail($ProductID);
-        $products->delete();
+        $product = Products::findOrFail($ProductID);
+        $product->delete();
 
-        return redirect('/products')->with('success', 'Category Data is successfully deleted');
+        return redirect('/products')->with('success', 'Podaci o proizvodu uspješno izbrisani');
     }
 }

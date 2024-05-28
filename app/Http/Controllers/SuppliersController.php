@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 class SuppliersController extends Controller
 {
+    /**
+     * Prikazuje popis svih dobavljača.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $suppliers = Suppliers::all();
@@ -14,7 +19,9 @@ class SuppliersController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Prikazuje formu za stvaranje novog dobavljača.
+     *
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -22,7 +29,10 @@ class SuppliersController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Sprema novog dobavljača u bazi podataka.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
@@ -34,7 +44,6 @@ class SuppliersController extends Controller
             'postal_code' => 'required|string|max:255',
             'country_name' => 'required|string|max:255',
             'phone' => 'required|string|max:255',
-
         ]);
 
         Suppliers::create([
@@ -45,16 +54,17 @@ class SuppliersController extends Controller
             'PostalCode' => $request->postal_code,
             'Country' => $request->country_name,
             'Phone' => $request->phone,
-
             // Dodajte CategoryID ako je potrebno
         ]);
 
-        return redirect()->route('suppliers.index')->with('success', 'Kategorija je uspješno spremljena.');
+        return redirect()->route('suppliers.index')->with('success', 'Dobavljač je uspješno spremljen.');
     }
 
-
     /**
-     * Display the specified resource.
+     * Prikazuje određenog dobavljača.
+     *
+     * @param  string  $id
+     * @return \Illuminate\Http\Response
      */
     public function show(string $id)
     {
@@ -62,9 +72,11 @@ class SuppliersController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Prikazuje formu za uređivanje određenog dobavljača.
+     *
+     * @param  int  $SupplierID
+     * @return \Illuminate\View\View
      */
-
     public function edit($SupplierID)
     {
         $supplier = Suppliers::findOrFail($SupplierID);
@@ -73,7 +85,11 @@ class SuppliersController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Ažurira određenog dobavljača u bazi podataka.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $SupplierID
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $SupplierID)
     {
@@ -85,13 +101,9 @@ class SuppliersController extends Controller
             'PostalCode' => 'required|string|max:255',
             'Country' => 'required|string|max:255',
             'Phone' => 'required|string|max:255',
-
         ]);
 
-        // Pronalazi kategoriju u bazi podataka po CategoryID-u
         $supplier = Suppliers::findOrFail($SupplierID);
-
-        // Ažurirajte postojeći zapis u bazi podataka s novim podacima
         $supplier->update([
             'SupplierName' => $request->SupplierName,
             'ContactName' => $request->ContactName,
@@ -103,21 +115,20 @@ class SuppliersController extends Controller
             // Dodajte ostale atribute kategorije ovisno o vašoj bazi podataka
         ]);
 
-        // Nakon što se zapis ažurira, preusmjerite korisnika na stranicu s popisom kategorija s porukom o uspješnom ažuriranju
-        return redirect()->route('suppliers.index')->with('success', 'Kategorija je uspješno ažurirana.');
+        return redirect()->route('suppliers.index')->with('success', 'Dobavljač je uspješno ažuriran.');
     }
 
-
-
-
     /**
-     * Remove the specified resource from storage.
+     * Briše određenog dobavljača iz baze podataka.
+     *
+     * @param  int  $SupplierID
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($SupplierID)
     {
         $suppliers = Suppliers::findOrFail($SupplierID);
         $suppliers->delete();
 
-        return redirect('/suppliers')->with('success', 'Category Data is successfully deleted');
+        return redirect('/suppliers')->with('success', 'Podaci o dobavljaču uspješno izbrisani');
     }
 }

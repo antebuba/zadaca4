@@ -34,14 +34,9 @@
                                             <td>{{ $orderdetail->Discount }}</td>
                                             
                                             <td>
-                                                <a href="{{ route('orderdetails.edit', ['orderdetail' => $orderdetail->OrderID]) }}" class="btn btn-primary">
-
-                                                    <button class="btn btn-primary btn-sm">
-                                                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Uredi
-                                                    </button>
-                                                </a>
+                                                
                                                 <!-- Dodajte gumb za brisanje -->
-                                                <form action="{{ route('orderdetails.destroy', ['OrderID' => $orderdetail->OrderID]) }}" method="POST" style="display: inline;">
+                                                <form action="{{ route('orderdetails.destroy', ['OrderID' => $orderdetail->OrderDetailID]) }}" method="POST" style="display: inline;">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Jeste li sigurni da želite izbrisati ovu kategoriju?')">

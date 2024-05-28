@@ -34,11 +34,8 @@
                                             <td>{{ $employ->Notes }}</td>
                                             
                                             <td>
-                                                <a href="{{ route('employees.edit', ['employee' => $employ->EmployeeID]) }}" class="btn btn-primary">
-
-                                                    <button class="btn btn-primary btn-sm">
-                                                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Uredi
-                                                    </button>
+                                                <a href="{{ route('employees.edit', ['EmployeeID' => $employ->EmployeeID]) }}" class="btn btn-primary">
+                                                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Uredi
                                                 </a>
                                                 <!-- Dodajte gumb za brisanje -->
                                                 <form action="{{ route('employees.destroy', ['EmployeeID' => $employ->EmployeeID]) }}" method="POST" style="display: inline;">

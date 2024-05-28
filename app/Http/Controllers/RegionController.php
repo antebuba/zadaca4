@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 class RegionController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Prikazuje popis svih regija.
+     *
+     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -17,7 +19,9 @@ class RegionController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Prikazuje formu za stvaranje nove regije.
+     *
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -25,7 +29,10 @@ class RegionController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Sprema novu regiju u bazi podataka.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
@@ -40,11 +47,14 @@ class RegionController extends Controller
             'RegionDescription' => $request->region_desc,
         ]);
 
-        return redirect()->route('region.index')->with('success', 'Kategorija je uspješno spremljena.');
+        return redirect()->route('region.index')->with('success', 'Regija je uspješno spremljena.');
     }
 
     /**
-     * Display the specified resource.
+     * Prikazuje određenu regiju.
+     *
+     * @param  string  $id
+     * @return \Illuminate\Http\Response
      */
     public function show(string $id)
     {
@@ -52,50 +62,51 @@ class RegionController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Prikazuje formu za uređivanje određene regije.
+     *
+     * @param  int  $RegionID
+     * @return \Illuminate\View\View
      */
     public function edit($RegionID)
     {
         $region = Region::findOrFail($RegionID);
-
-        return view('region.edit', compact('region')); // Promijenjena varijabla $Category u $category
+        return view('region.edit', compact('region'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Ažurira određenu regiju u bazi podataka.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $RegionID
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $RegionID)
     {
         $request->validate([
             'RegionID' => 'required|string|max:255',
             'RegionDescription' => 'required|string|max:255', // Dodajte validaciju za opis ako je potrebno
-
-
         ]);
 
-        // Pronalazi kategoriju u bazi podataka po CategoryID-u
         $region = Region::findOrFail($RegionID);
-
-        // Ažurirajte postojeći zapis u bazi podataka s novim podacima
         $region->update([
             'RegionID' => $request->RegionID,
             'RegionDescription' => $request->RegionDescription,
-
-            // Dodajte ostale atribute kategorije ovisno o vašoj bazi podataka
         ]);
 
-        // Nakon što se zapis ažurira, preusmjerite korisnika na stranicu s popisom kategorija s porukom o uspješnom ažuriranju
-        return redirect()->route('region.index')->with('success', 'Kategorija je uspješno ažurirana.');
+        return redirect()->route('region.index')->with('success', 'Regija je uspješno ažurirana.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Briše određenu regiju iz baze podataka.
+     *
+     * @param  int  $RegionID
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($RegionID)
     {
         $region = Region::findOrFail($RegionID);
         $region->delete();
 
-        return redirect('/region')->with('success', 'Category Data is successfully deleted');
+        return redirect('/region')->with('success', 'Podaci o regiji uspješno izbrisani');
     }
 }

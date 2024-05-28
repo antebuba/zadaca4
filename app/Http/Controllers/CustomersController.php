@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 class CustomersController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Prikazuje popis svih korisnika.
+     *
+     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -17,7 +19,9 @@ class CustomersController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Prikazuje formu za stvaranje novog korisnika.
+     *
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -25,13 +29,16 @@ class CustomersController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Sprema novog korisnika u bazi podataka.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
         $request->validate([
             'customer_name' => 'required|string|max:255',
-            'contact_name' => 'required|string|max:255', // Dodajte validaciju za opis ako je potrebno
+            'contact_name' => 'required|string|max:255',
             'address_name' => 'required|string|max:255',
             'city_name' => 'required|string|max:255',
             'postal_code' => 'required|string|max:255',
@@ -45,13 +52,16 @@ class CustomersController extends Controller
             'City' => $request->city_name,
             'PostalCode' => $request->postal_code,
             'Country' => $request->country_name,
-            // Dodajte CategoryID ako je potrebno
         ]);
 
-        return redirect()->route('customers.index')->with('success', 'Kategorija je uspješno spremljena.');
+        return redirect()->route('customers.index')->with('success', 'Korisnik je uspješno spremljen.');
     }
+
     /**
-     * Display the specified resource.
+     * Prikazuje određenog korisnika.
+     *
+     * @param  string  $id
+     * @return \Illuminate\Http\Response
      */
     public function show(string $id)
     {
@@ -59,34 +69,36 @@ class CustomersController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Prikazuje formu za uređivanje određenog korisnika.
+     *
+     * @param  int  $CustomerID
+     * @return \Illuminate\View\View
      */
     public function edit($CustomerID)
     {
         $customer = Customers::findOrFail($CustomerID);
-
-        return view('customers.edit', compact('customer')); // Promijenjena varijabla $Category u $category
+        return view('customers.edit', compact('customer'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Ažurira određenog korisnika u bazi podataka.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $CustomerID
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $CustomerID)
     {
         $request->validate([
             'CustomerName' => 'required|string|max:255',
-            'ContactName' => 'required|string|max:255', // Dodajte validaciju za opis ako je potrebno
+            'ContactName' => 'required|string|max:255',
             'Address' => 'required|string|max:255',
             'City' => 'required|string|max:255',
             'PostalCode' => 'required|string|max:255',
             'Country' => 'required|string|max:255',
-
         ]);
 
-        // Pronalazi kategoriju u bazi podataka po CategoryID-u
         $customer = Customers::findOrFail($CustomerID);
-
-        // Ažurirajte postojeći zapis u bazi podataka s novim podacima
         $customer->update([
             'CustomerName' => $request->CustomerName,
             'ContactName' => $request->ContactName,
@@ -94,20 +106,22 @@ class CustomersController extends Controller
             'City' => $request->City,
             'PostalCode' => $request->PostalCode,
             'Country' => $request->Country,
-            // Dodajte ostale atribute kategorije ovisno o vašoj bazi podataka
         ]);
 
-        // Nakon što se zapis ažurira, preusmjerite korisnika na stranicu s popisom kategorija s porukom o uspješnom ažuriranju
-        return redirect()->route('customers.index')->with('success', 'Kategorija je uspješno ažurirana.');
+        return redirect()->route('customers.index')->with('success', 'Korisnik je uspješno ažuriran.');
     }
+
     /**
-     * Remove the specified resource from storage.
+     * Briše određenog korisnika iz baze podataka.
+     *
+     * @param  int  $CustomerID
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($CustomerID)
     {
-        $customers = Customers::findOrFail($CustomerID);
-        $customers->delete();
+        $customer = Customers::findOrFail($CustomerID);
+        $customer->delete();
 
-        return redirect('/customers')->with('success', 'Category Data is successfully deleted');
+        return redirect('/customers')->with('success', 'Podatak o korisniku je uspješno obrisan');
     }
 }

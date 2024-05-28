@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 class CustomerDemographicsController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Prikazuje popis svih customer demographics podataka.
+     *
+     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -17,7 +19,9 @@ class CustomerDemographicsController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Prikazuje formu za stvaranje novog customer demographics podatka.
+     *
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -25,27 +29,31 @@ class CustomerDemographicsController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Sprema novi customer demographics podatak u bazi podataka.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
         $request->validate([
             'customer_type_id' => 'required|string|max:255',
-            'customer_desc' => 'required|string|max:255', // Dodajte validaciju za opis ako je potrebno
-
+            'customer_desc' => 'required|string|max:255',
         ]);
 
         CustomerDemographics::create([
             'CustomerTypeID' => $request->customer_type_id,
             'CustomerDesc' => $request->customer_desc,
-
         ]);
 
-        return redirect()->route('customerdemographics.index')->with('success', 'Kategorija je uspješno spremljena.');
+        return redirect()->route('customerdemographics.index')->with('success', 'Podatak je uspješno spremljen.');
     }
 
     /**
-     * Display the specified resource.
+     * Prikazuje određeni customer demographics podatak.
+     *
+     * @param  string  $id
+     * @return \Illuminate\Http\Response
      */
     public function show(string $id)
     {
@@ -53,50 +61,51 @@ class CustomerDemographicsController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Prikazuje formu za uređivanje određenog customer demographics podatka.
+     *
+     * @param  int  $CustomerTypeID
+     * @return \Illuminate\View\View
      */
     public function edit($CustomerTypeID)
     {
         $customerdemographic = CustomerDemographics::findOrFail($CustomerTypeID);
-
-        return view('customerdemographics.edit', compact('customerdemographic')); // Promijenjena varijabla $Category u $category
+        return view('customerdemographics.edit', compact('customerdemographic'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Ažurira određeni customer demographics podatak u bazi podataka.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $CustomerTypeID
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $CustomerTypeID)
     {
         $request->validate([
             'CustomerTypeID' => 'required|string|max:255',
-            'CustomerDesc' => 'required|string|max:255'
-
+            'CustomerDesc' => 'required|string|max:255',
         ]);
 
-        // Pronalazi kategoriju u bazi podataka po CategoryID-u
         $customerdemographic = CustomerDemographics::findOrFail($CustomerTypeID);
-
-        // Ažurirajte postojeći zapis u bazi podataka s novim podacima
         $customerdemographic->update([
             'CustomerTypeID' => $request->CustomerTypeID,
             'CustomerDesc' => $request->CustomerDesc,
-
-            // Dodajte ostale atribute kategorije ovisno o vašoj bazi podataka
         ]);
 
-        // Nakon što se zapis ažurira, preusmjerite korisnika na stranicu s popisom kategorija s porukom o uspješnom ažuriranju
-        return redirect()->route('customerdemographics.index')->with('success', 'Kategorija je uspješno ažurirana.');
+        return redirect()->route('customerdemographics.index')->with('success', 'Podatak je uspješno ažuriran.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Briše određeni customer demographics podatak iz baze podataka.
+     *
+     * @param  int  $CustomerTypeID
+     * @return \Illuminate\Http\RedirectResponse
      */
-    //
     public function destroy($CustomerTypeID)
     {
         $customerdemographics = CustomerDemographics::findOrFail($CustomerTypeID);
         $customerdemographics->delete();
 
-        return redirect('/customerdemographics')->with('success', 'Category Data is successfully deleted');
+        return redirect('/customerdemographics')->with('success', 'Podatak je uspješno obrisan');
     }
 }

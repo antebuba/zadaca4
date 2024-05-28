@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 class EmployeeTerritoriesController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Prikazuje popis svih zaposlenikovih teritorija.
+     *
+     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -17,7 +19,9 @@ class EmployeeTerritoriesController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Prikazuje formu za stvaranje nove zaposlenikove teritorije.
+     *
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -25,7 +29,10 @@ class EmployeeTerritoriesController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Sprema novu zaposlenikovu teritoriju u bazi podataka.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
@@ -37,16 +44,16 @@ class EmployeeTerritoriesController extends Controller
         EmployeeTerritories::create([
             'EmployeeID' => $request->employee_id,
             'TerritoryID' => $request->territory_id
-
-
-            // Dodajte CategoryID ako je potrebno
         ]);
 
-        return redirect()->route('employeeterritories.index')->with('success', 'Kategorija je uspješno spremljena.');
+        return redirect()->route('employeeterritories.index')->with('success', 'Zaposlenikova teritorija je uspješno spremljena.');
     }
 
     /**
-     * Display the specified resource.
+     * Prikazuje određenu zaposlenikovu teritoriju.
+     *
+     * @param  string  $id
+     * @return \Illuminate\Http\Response
      */
     public function show(string $id)
     {
@@ -54,19 +61,23 @@ class EmployeeTerritoriesController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Prikazuje formu za uređivanje određene zaposlenikove teritorije.
+     *
+     * @param  int  $EmployeeID
+     * @return \Illuminate\View\View
      */
     public function edit($EmployeeID)
     {
-
         $employeeterritory = EmployeeTerritories::findOrFail($EmployeeID);
-
-
-        return view('employeeterritories.edit', compact('employeeterritory')); // Promijenjena varijabla $Category u $category
+        return view('employeeterritories.edit', compact('employeeterritory'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Ažurira određenu zaposlenikovu teritoriju u bazi podataka.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $EmployeeID
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $EmployeeID)
     {
@@ -75,28 +86,26 @@ class EmployeeTerritoriesController extends Controller
             'TerritoryID' => 'required|string|max:255'
         ]);
 
-        // Pronalazi kategoriju u bazi podataka po CategoryID-u
         $employeeterritory = EmployeeTerritories::findOrFail($EmployeeID);
-
-        // Ažurirajte postojeći zapis u bazi podataka s novim podacima
         $employeeterritory->update([
             'EmployeeID' => $request->EmployeeID,
             'TerritoryID' => $request->TerritoryID
-            // Dodajte ostale atribute kategorije ovisno o vašoj bazi podataka
         ]);
 
-        // Nakon što se zapis ažurira, preusmjerite korisnika na stranicu s popisom kategorija s porukom o uspješnom ažuriranju
-        return redirect()->route('employeeterritories.index')->with('success', 'Kategorija je uspješno ažurirana.');
+        return redirect()->route('employeeterritories.index')->with('success', 'Zaposlenikova teritorija je uspješno ažurirana.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Briše određenu zaposlenikovu teritoriju iz baze podataka.
+     *
+     * @param  int  $EmployeeID
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($EmployeeID)
     {
         $employeeterritories = EmployeeTerritories::findOrFail($EmployeeID);
         $employeeterritories->delete();
 
-        return redirect('/employeeterritories')->with('success', 'Category Data is successfully deleted');
+        return redirect('/employeeterritories')->with('success', 'Podatak o zaposlenikovoj teritoriji je uspješno obrisan');
     }
 }

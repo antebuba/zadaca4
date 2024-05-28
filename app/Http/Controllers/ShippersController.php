@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 class ShippersController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Prikazuje popis svih dostavljača.
+     *
+     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -16,9 +18,10 @@ class ShippersController extends Controller
         return view('shippers.index')->with('shippers', $shippers);
     }
 
-
     /**
-     * Show the form for creating a new resource.
+     * Prikazuje formu za stvaranje novog dostavljača.
+     *
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -26,7 +29,10 @@ class ShippersController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Sprema novog dostavljača u bazi podataka.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
@@ -41,11 +47,14 @@ class ShippersController extends Controller
             // Dodajte CategoryID ako je potrebno
         ]);
 
-        return redirect()->route('shippers.index')->with('success', 'Kategorija je uspješno spremljena.');
+        return redirect()->route('shippers.index')->with('success', 'Dostavljač je uspješno spremljen.');
     }
 
     /**
-     * Display the specified resource.
+     * Prikazuje određenog dostavljača.
+     *
+     * @param  string  $id
+     * @return \Illuminate\Http\Response
      */
     public function show(string $id)
     {
@@ -53,7 +62,10 @@ class ShippersController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Prikazuje formu za uređivanje određenog dostavljača.
+     *
+     * @param  int  $ShipperID
+     * @return \Illuminate\View\View
      */
     public function edit($ShipperID)
     {
@@ -63,40 +75,40 @@ class ShippersController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Ažurira određenog dostavljača u bazi podataka.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $ShipperID
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $ShipperID)
     {
         $request->validate([
             'ShipperName' => 'required|string|max:255',
             'Phone' => 'required|string|max:255', // Dodajte validaciju za opis ako je potrebno
-
-
         ]);
 
-        // Pronalazi kategoriju u bazi podataka po CategoryID-u
         $shipper = Shippers::findOrFail($ShipperID);
-
-        // Ažurirajte postojeći zapis u bazi podataka s novim podacima
         $shipper->update([
             'ShipperName' => $request->ShipperName,
             'Phone' => $request->Phone
-
             // Dodajte ostale atribute kategorije ovisno o vašoj bazi podataka
         ]);
 
-        // Nakon što se zapis ažurira, preusmjerite korisnika na stranicu s popisom kategorija s porukom o uspješnom ažuriranju
-        return redirect()->route('shippers.index')->with('success', 'Kategorija je uspješno ažurirana.');
+        return redirect()->route('shippers.index')->with('success', 'Dostavljač je uspješno ažuriran.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Briše određenog dostavljača iz baze podataka.
+     *
+     * @param  int  $ShipperID
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($ShipperID)
     {
         $shippers = Shippers::findOrFail($ShipperID);
         $shippers->delete();
 
-        return redirect('/shippers')->with('success', 'Category Data is successfully deleted');
+        return redirect('/shippers')->with('success', 'Podaci o dostavljaču uspješno izbrisani');
     }
 }

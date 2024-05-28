@@ -26,14 +26,15 @@
                                             <td>{{ $customercustomerdemoo->CustomerTypeID}}</td>
                                             
                                             <td>
-                                                <a href="{{ route('customercustomerdemo.edit', ['customercustomerdemoo' => $customercustomerdemoo->CustomerID]) }}" class="btn btn-primary">
+                                                <a href="{{ route('customercustomerdemo.edit', $customercustomerdemoo->CustomerTypeID) }}" class="btn btn-primary">
 
                                                     <button class="btn btn-primary btn-sm">
                                                         <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Uredi
                                                     </button>
                                                 </a>
                                                 <!-- Dodajte gumb za brisanje -->
-                                                <form action="{{ route('customercustomerdemo.destroy', ['CustomerID' => $customercustomerdemoo->CustomerID]) }}" method="POST" style="display: inline;">
+                                                <form action="{{ route('customercustomerdemo.destroy', $customercustomerdemoo->CustomerTypeID) }}" method="POST" style="display: inline;">
+
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Jeste li sigurni da želite izbrisati ovu kategoriju?')">

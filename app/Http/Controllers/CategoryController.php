@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use App\Models\Category;
-
 
 class CategoryController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Prikazuje popis svih kategorija.
+     *
+     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -19,7 +19,9 @@ class CategoryController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Prikazuje formu za stvaranje nove kategorije.
+     *
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -27,27 +29,31 @@ class CategoryController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Sprema novu kategoriju u bazi podataka.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
         $request->validate([
             'category_name' => 'required|string|max:255',
-            'category_description' => 'required|string|max:255', // Dodajte validaciju za opis ako je potrebno
+            'category_description' => 'required|string|max:255',
         ]);
 
         Category::create([
             'CategoryName' => $request->category_name,
             'Description' => $request->category_description,
-            // Dodajte CategoryID ako je potrebno
         ]);
 
         return redirect()->route('categories.index')->with('success', 'Kategorija je uspješno spremljena.');
     }
 
-
     /**
-     * Display the specified resource.
+     * Prikazuje određenu kategoriju.
+     *
+     * @param  string  $id
+     * @return \Illuminate\Http\Response
      */
     public function show(string $id)
     {
@@ -55,45 +61,45 @@ class CategoryController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Prikazuje formu za uređivanje određene kategorije.
+     *
+     * @param  int  $CategoryID
+     * @return \Illuminate\View\View
      */
-
     public function edit($CategoryID)
     {
         $category = Category::findOrFail($CategoryID);
-
-        return view('categories.edit', compact('category')); // Promijenjena varijabla $Category u $category
+        return view('categories.edit', compact('category'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Ažurira određenu kategoriju u bazi podataka.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $CategoryID
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $CategoryID)
     {
         $request->validate([
             'CategoryName' => 'required|string|max:255',
-            'Description' => 'required|string|max:255', // Dodajte validaciju za opis ako je potrebno
+            'Description' => 'required|string|max:255',
         ]);
 
-        // Pronalazi kategoriju u bazi podataka po CategoryID-u
         $category = Category::findOrFail($CategoryID);
-
-        // Ažurirajte postojeći zapis u bazi podataka s novim podacima
         $category->update([
             'CategoryName' => $request->CategoryName,
             'Description' => $request->Description,
-            // Dodajte ostale atribute kategorije ovisno o vašoj bazi podataka
         ]);
 
-        // Nakon što se zapis ažurira, preusmjerite korisnika na stranicu s popisom kategorija s porukom o uspješnom ažuriranju
         return redirect()->route('categories.index')->with('success', 'Kategorija je uspješno ažurirana.');
     }
 
-
-
-
     /**
-     * Remove the specified resource from storage.
+     * Briše određenu kategoriju iz baze podataka.
+     *
+     * @param  int  $CategoryID
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($CategoryID)
     {

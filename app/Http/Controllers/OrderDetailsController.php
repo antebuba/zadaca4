@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 class OrderDetailsController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Prikazuje popis svih detalja narudžbe.
+     *
+     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -17,14 +19,20 @@ class OrderDetailsController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Prikazuje formu za stvaranje novog detalja narudžbe.
+     *
+     * @return \Illuminate\View\View
      */
     public function create()
     {
         return view('orderdetails.create');
     }
+
     /**
-     * Store a newly created resource in storage.
+     * Sprema novi detalj narudžbe u bazi podataka.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
@@ -34,8 +42,6 @@ class OrderDetailsController extends Controller
             'product_id' => 'required|string|max:255',
             'quantity' => 'required|string|max:255',
             'discount' => 'required|string|max:255'
-
-            // Dodajte validaciju za opis ako je potrebno
         ]);
 
         OrderDetails::create([
@@ -44,14 +50,16 @@ class OrderDetailsController extends Controller
             'ProductID' => $request->product_id,
             'Quantity' => $request->quantity,
             'Discount' => $request->discount,
-            // Dodajte CategoryID ako je potrebno
         ]);
 
-        return redirect()->route('orderdetails.index')->with('success', 'Kategorija je uspješno spremljena.');
+        return redirect()->route('orderdetails.index')->with('success', 'Detalj narudžbe je uspješno spremljen.');
     }
 
     /**
-     * Display the specified resource.
+     * Prikazuje određeni detalj narudžbe.
+     *
+     * @param  string  $id
+     * @return \Illuminate\Http\Response
      */
     public function show(string $id)
     {
@@ -59,34 +67,36 @@ class OrderDetailsController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Prikazuje formu za uređivanje određenog detalja narudžbe.
+     *
+     * @param  int  $OrderDetailID
+     * @return \Illuminate\View\View
      */
     public function edit($OrderDetailID)
     {
         $orderdetail = OrderDetails::findOrFail($OrderDetailID);
-
-        return view('orderdetails.edit', compact('orderdetail')); // Promijenjena varijabla $Category u $category
+        return view('orderdetails.edit', compact('orderdetail'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Ažurira određeni detalj narudžbe u bazi podataka.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $OrderDetailID
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $OrderDetailID)
     {
         $request->validate([
             'OrderDetailID' => 'required|string|max:255',
             'OrderID' => 'required|string|max:255',
-            'ProductID' => 'required|string|max:255', // Dodajte validaciju za opis ako je potrebno
+            'ProductID' => 'required|string|max:255',
             'UnitPrice' => 'required|string|max:255',
             'Quantity' => 'required|string|max:255',
             'Discount' => 'required|string|max:255'
-
         ]);
 
-        // Pronalazi kategoriju u bazi podataka po CategoryID-u
         $orderdetail = OrderDetails::findOrFail($OrderDetailID);
-
-        // Ažurirajte postojeći zapis u bazi podataka s novim podacima
         $orderdetail->update([
             'OrderDetailID' => $request->OrderDetailID,
             'OrderID' => $request->OrderID,
@@ -94,22 +104,22 @@ class OrderDetailsController extends Controller
             'UnitPrice' => $request->UnitPrice,
             'Quantity' => $request->Quantity,
             'Discount' => $request->Discount,
-
-            // Dodajte ostale atribute kategorije ovisno o vašoj bazi podataka
         ]);
 
-        // Nakon što se zapis ažurira, preusmjerite korisnika na stranicu s popisom kategorija s porukom o uspješnom ažuriranju
-        return redirect()->route('orderdetail.index')->with('success', 'Kategorija je uspješno ažurirana.');
+        return redirect()->route('orderdetails.index')->with('success', 'Detalj narudžbe je uspješno ažuriran.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Briše određeni detalj narudžbe iz baze podataka.
+     *
+     * @param  int  $OrderDetailID
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($OrderDetailID)
     {
         $orderdetails = OrderDetails::findOrFail($OrderDetailID);
         $orderdetails->delete();
 
-        return redirect('/orderdetails')->with('success', 'Category Data is successfully deleted');
+        return redirect('/orderdetails')->with('success', 'Podatak o detalju narudžbe je uspješno obrisan');
     }
 }

@@ -10,7 +10,9 @@ use App\Models\Employees;
 class EmployeesController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Prikazuje popis svih zaposlenika.
+     *
+     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -19,21 +21,25 @@ class EmployeesController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Prikazuje formu za stvaranje novog zaposlenika.
+     *
+     * @return \Illuminate\View\View
      */
     public function create()
     {
         return view('employees.create');
     }
-
     /**
-     * Store a newly created resource in storage.
+     * Sprema novog zaposlenika u bazi podataka.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
         $request->validate([
             'last_name' => 'required|string|max:255',
-            'first_naame' => 'required|string|max:255', // Dodajte validaciju za opis ako je potrebno
+            'first_name' => 'required|string|max:255',
             'birth_date' => 'required|string|max:255',
             'photo' => 'required|string|max:255',
             'notes' => 'required|string|max:255',
@@ -45,17 +51,16 @@ class EmployeesController extends Controller
             'BirthDate' => $request->birth_date,
             'Photo' => $request->photo,
             'Notes' => $request->notes,
-
-
-            // Dodajte CategoryID ako je potrebno
         ]);
 
-        return redirect()->route('employees.index')->with('success', 'Kategorija je uspješno spremljena.');
+        return redirect()->route('employees.index')->with('success', 'Zaposlenik je uspješno spremljen.');
     }
 
-
     /**
-     * Display the specified resource.
+     * Prikazuje određenog zaposlenika.
+     *
+     * @param  string  $id
+     * @return \Illuminate\Http\Response
      */
     public function show(string $id)
     {
@@ -63,58 +68,57 @@ class EmployeesController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Prikazuje formu za uređivanje određenog zaposlenika.
+     *
+     * @param  int  $EmployeeID
+     * @return \Illuminate\View\View
      */
-
-    public function edit($EmployeeID)
+    public function edit($employee)
     {
-        $employ = Employees::findOrFail($EmployeeID);
-
-
-        return view('employees.edit', compact('employ')); // Promijenjena varijabla $Category u $category
+        $employee = Employees::findOrFail($employee);
+        return view('employees.edit', compact('employee'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Ažurira određenog zaposlenika u bazi podataka.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $EmployeeID
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, $EmployeeID)
+    public function update(Request $request, $employee)
     {
         $request->validate([
             'LastName' => 'required|string|max:255',
-            'FirstName' => 'required|string|max:255', // Dodajte validaciju za opis ako je potrebno
+            'FirstName' => 'required|string|max:255',
             'BirthDate' => 'required|string|max:255',
             'Photo' => 'required|string|max:255',
             'Notes' => 'required|string|max:255',
         ]);
 
-        // Pronalazi kategoriju u bazi podataka po CategoryID-u
-        $employ = Employees::findOrFail($EmployeeID);
-
-        // Ažurirajte postojeći zapis u bazi podataka s novim podacima
+        $employ = Employees::findOrFail($employee);
         $employ->update([
             'LastName' => $request->LastName,
             'FirstName' => $request->FirstName,
             'BirthDate' => $request->BirthDate,
             'Photo' => $request->Photo,
             'Notes' => $request->Notes,
-            // Dodajte ostale atribute kategorije ovisno o vašoj bazi podataka
         ]);
 
-        // Nakon što se zapis ažurira, preusmjerite korisnika na stranicu s popisom kategorija s porukom o uspješnom ažuriranju
-        return redirect()->route('employees.index')->with('success', 'Kategorija je uspješno ažurirana.');
+        return redirect()->route('employees.index')->with('success', 'Zaposlenik je uspješno ažuriran.');
     }
 
-
-
-
     /**
-     * Remove the specified resource from storage.
+     * Briše određenog zaposlenika iz baze podataka.
+     *
+     * @param  int  $EmployeeID
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy($EmployeeID)
+    public function destroy($employee)
     {
-        $employees = Employees::findOrFail($EmployeeID);
+        $employees = Employees::findOrFail($employee);
         $employees->delete();
 
-        return redirect('/employees')->with('success', 'Category Data is successfully deleted');
+        return redirect('/employees')->with('success', 'Podatak o zaposleniku je uspješno obrisan');
     }
 }

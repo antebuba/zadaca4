@@ -1,4 +1,4 @@
-@extends('customers.layout')
+@extends('suppliers.layout')
 
 @section('content')
     <h1>Uredi dobavljača</h1>

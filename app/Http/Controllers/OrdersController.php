@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 class OrdersController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Prikazuje popis svih narudžbi.
+     *
+     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -17,7 +19,9 @@ class OrdersController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Prikazuje formu za stvaranje nove narudžbe.
+     *
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -25,7 +29,10 @@ class OrdersController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Sprema novu narudžbu u bazi podataka.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
@@ -35,8 +42,6 @@ class OrdersController extends Controller
             'employee_id' => 'required|string|max:255',
             'order_date' => 'required|string|max:255',
             'shipper_id' => 'required|string|max:255'
-
-            // Dodajte validaciju za opis ako je potrebno
         ]);
 
         Orders::create([
@@ -45,13 +50,16 @@ class OrdersController extends Controller
             'EmployeeID' => $request->employee_id,
             'OrderDate' => $request->order_date,
             'ShipperID' => $request->shipper_id,
-            // Dodajte CategoryID ako je potrebno
         ]);
 
-        return redirect()->route('orders.index')->with('success', 'Kategorija je uspješno spremljena.');
+        return redirect()->route('orders.index')->with('success', 'Narudžba je uspješno spremljena.');
     }
+
     /**
-     * Display the specified resource.
+     * Prikazuje određenu narudžbu.
+     *
+     * @param  string  $id
+     * @return \Illuminate\Http\Response
      */
     public function show(string $id)
     {
@@ -59,54 +67,57 @@ class OrdersController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Prikazuje formu za uređivanje određene narudžbe.
+     *
+     * @param  int  $OrderID
+     * @return \Illuminate\View\View
      */
     public function edit($OrderID)
     {
         $order = Orders::findOrFail($OrderID);
-
-        return view('orders.edit', compact('order')); // Promijenjena varijabla $Category u $category
+        return view('orders.edit', compact('order'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Ažurira određenu narudžbu u bazi podataka.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $OrderID
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $OrderID)
     {
         $request->validate([
             'OrderID' => 'required|string|max:255',
-            'CustomerID' => 'required|string|max:255', // Dodajte validaciju za opis ako je potrebno
+            'CustomerID' => 'required|string|max:255',
             'EmployeeID' => 'required|string|max:255',
             'OrderDate' => 'required|string|max:255',
             'ShipperID' => 'required|string|max:255'
-
         ]);
 
-        // Pronalazi kategoriju u bazi podataka po CategoryID-u
         $order = Orders::findOrFail($OrderID);
-
-        // Ažurirajte postojeći zapis u bazi podataka s novim podacima
         $order->update([
             'OrderID' => $request->OrderID,
             'CustomerID' => $request->CustomerID,
             'EmployeeID' => $request->EmployeeID,
             'OrderDate' => $request->OrderDate,
             'ShipperID' => $request->ShipperID,
-
-            // Dodajte ostale atribute kategorije ovisno o vašoj bazi podataka
         ]);
 
-        // Nakon što se zapis ažurira, preusmjerite korisnika na stranicu s popisom kategorija s porukom o uspješnom ažuriranju
-        return redirect()->route('orders.index')->with('success', 'Kategorija je uspješno ažurirana.');
+        return redirect()->route('orders.index')->with('success', 'Narudžba je uspješno ažurirana.');
     }
+
     /**
-     * Remove the specified resource from storage.
+     * Briše određenu narudžbu iz baze podataka.
+     *
+     * @param  int  $OrderID
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($OrderID)
     {
-        $orders = Orders::findOrFail($OrderID);
-        $orders->delete();
+        $order = Orders::findOrFail($OrderID);
+        $order->delete();
 
-        return redirect('/orders')->with('success', 'Category Data is successfully deleted');
+        return redirect('/orders')->with('success', 'Podaci o narudžbi uspješno izbrisani');
     }
 }

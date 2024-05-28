@@ -45,9 +45,9 @@ Route::put('/customers/{CustomerID}', [CustomersController::class, 'update'])->n
 
 
 Route::resource('/employees', EmployeesController::class);
-Route::get('/employ/{EmployeeID}/edit', [EmployeesController::class, 'edit'])->name('employ.edit');
+Route::get('/employees/{EmployeeID}/edit', [EmployeesController::class, 'edit'])->name('employees.edit');
 Route::delete('/employees/{EmployeeID}', [EmployeesController::class, 'destroy'])->name('employees.destroy');
-Route::put('/emoloyees/{EmployeeID}', [EmployeesController::class, 'update'])->name('employees.update');
+Route::put('/employees/{EmployeeID}', [EmployeesController::class, 'update'])->name('employees.update');
 
 Route::resource('/region', RegionController::class);
 Route::get('/regionn/{RegionID}/edit', [RegionController::class, 'edit'])->name('regionn.edit');

@@ -1,11 +1,8 @@
-<!-- resources/views/categories/create.blade.php -->
-<head><link rel="stylesheet" href="{{ asset('css/app.css') }}">
-</head>
 @extends('employees.layout')
 
 @section('content')
     <h1>Novi zaposlenik</h1>
-    <form action="{{ route('customers.store') }}" method="POST">
+    <form action="{{ route('employees.store') }}" method="POST">
         @csrf
         <div class="form-group">
             <label for="last_name">Prezime zaposlenika:</label>
@@ -30,7 +27,6 @@
             <input type="text" name="notes" id="notes" class="form-control">
         </div>
 
-    
         <button type="submit" class="btn btn-primary">Spremi</button>
     </form>
 @endsection
